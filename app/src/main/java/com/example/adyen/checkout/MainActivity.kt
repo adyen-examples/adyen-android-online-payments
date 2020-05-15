@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity(), CartViewFragment.OnListFragmentInterac
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_dashboard
+                R.id.navigation_dropin, R.id.navigation_components
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Adyen Checkout Demo</string>
-    <string name="title_home">Drop in</string>
-    <string name="title_dashboard">Components</string>
+    <string name="title_dropin">Drop in</string>
+    <string name="title_components">Components</string>
     <string name="title_cart">My Cart</string>
     <string name="text_total">Total: 10.00</string>
     <string name="text_btn_checkout">Checkout</string>

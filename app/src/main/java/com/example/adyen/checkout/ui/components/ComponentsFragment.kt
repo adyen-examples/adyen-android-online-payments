@@ -1,4 +1,4 @@
-package com.example.adyen.checkout.ui.dashboard
+package com.example.adyen.checkout.ui.components
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,17 +10,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.adyen.checkout.R
 
-class DashboardFragment : Fragment() {
+class ComponentsFragment : Fragment() {
 
-    private lateinit var dashboardViewModel: DashboardViewModel
+    private lateinit var dashboardViewModel: ComponentsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        dashboardViewModel = ViewModelProviders.of(this).get(DashboardViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
+        dashboardViewModel = ViewModelProviders.of(this).get(ComponentsViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_components, container, false)
         val textView: TextView = root.findViewById(R.id.text_dashboard)
         dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it

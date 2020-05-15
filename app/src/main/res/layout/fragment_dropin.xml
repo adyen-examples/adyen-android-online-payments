@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
     android:orientation="vertical"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".ui.dropin.DropinFragment">
 
     <fragment
         android:id="@+id/cart_view"
