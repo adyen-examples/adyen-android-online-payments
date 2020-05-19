@@ -30,19 +30,19 @@ Each demo leverages Adyen's Library for Android ([GitHub](https://github.com/Ady
 
 ## Requirements
 
-Android 9+
-Android Studio
-Android Emulator
+- Android 9+
+- Android Studio
+- Android Emulator
 
 ## Installation & Usage
 
 1. Clone this repo:
 
 ```
-git clone https://github.com/adyen-examples/adyen-react-online-payments.git
+git clone https://github.com/adyen-examples/adyen-android-online-payments.git
 ```
 
-2. Navigate to the `server` directory to configure and run the backend server
+2. Navigate to the `adyen-android-online-payments/server` directory to configure and run the backend server
 
    1. Create a `.env` file with your [API key](https://docs.adyen.com/user-management/how-to-get-the-api-key), [Client public Key](https://docs.adyen.com/checkout/android/drop-in#get-your-client-encryption-public-key), server url, and merchant account name (all credentials are in string format):
 
@@ -57,7 +57,7 @@ git clone https://github.com/adyen-examples/adyen-react-online-payments.git
 
    2. Run the backend server:
 
-      We have a minimal server written in Golang.
+      We have a minimal server written in Golang. The server runs on port 3000.
 
       You can run the prebuilt binary if you don't have Go installed.
 
@@ -69,9 +69,9 @@ git clone https://github.com/adyen-examples/adyen-react-online-payments.git
 
 3. Build & Start the Android app:
 
-   You can run the main activity directly from Android Studio. You must configure an emulator or setup a real device on Android Studio for this. You can follow [this guide](https://developer.android.com/training/basics/firstapp/running-app) for instructions.
+   Open the project in Android Studio and run the `app/src/main/java/com/example/adyen/checkout/MainActivity.kt` from context menu. You must configure an emulator or setup a real device on Android Studio for this. You can follow [this guide](https://developer.android.com/training/basics/firstapp/running-app) for instructions.
 
-4. Visit the Android app called "Adyen Checkout Demo" on the emulaed/real device to select an integration type.
+4. Visit the Android app called "Adyen Checkout Demo" on the emulated/real device to select an integration type.
 
    To try out integrations with test card numbers and payment method details, see [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers).
 
