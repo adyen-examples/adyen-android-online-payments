@@ -78,33 +78,21 @@ class ApiServicesUtil constructor(context: Context) {
 
     // This is synchronous request
     fun initPayment(req: JSONObject): CallResult {
-        val future = RequestFuture.newFuture<JSONObject>()
-        val request = JsonObjectRequest(
+        return makeSyncPaymentRequest(
             "$baseURL/initiatePayment",
-            req.getJSONObject("paymentMethod"),
-            future,
-            future
+            req.getJSONObject("paymentMethod")
         )
-        queue.add(request)
-
-        return try {
-            val response = future.get() // this will block
-            val action = response.getString("action")
-            if (action.isNullOrEmpty()) {
-                CallResult(CallResult.ResultType.FINISHED, response.getString("resultCode"))
-            } else {
-                CallResult(CallResult.ResultType.ACTION, action)
-            }
-        } catch (e: Exception) {
-            CallResult(CallResult.ResultType.ERROR, e.toString())
-        }
     }
 
     // This is synchronous request
     fun submitAdditionalDetails(req: JSONObject): CallResult {
+        return makeSyncPaymentRequest("$baseURL/submitAdditionalDetails", req)
+    }
+
+    private fun makeSyncPaymentRequest(url: String, req: JSONObject): CallResult {
         val future = RequestFuture.newFuture<JSONObject>()
         val request = JsonObjectRequest(
-            "$baseURL/submitAdditionalDetails",
+            url,
             req,
             future,
             future
@@ -113,7 +101,11 @@ class ApiServicesUtil constructor(context: Context) {
 
         return try {
             val response = future.get() // this will block
-            CallResult(CallResult.ResultType.FINISHED, response.getString("resultCode"))
+            if (response.isNull("action")) {
+                CallResult(CallResult.ResultType.FINISHED, response.getString("resultCode"))
+            } else {
+                CallResult(CallResult.ResultType.ACTION, response.getString("action"))
+            }
         } catch (e: Exception) {
             CallResult(CallResult.ResultType.ERROR, e.toString())
         }

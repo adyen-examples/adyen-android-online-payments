@@ -83,7 +83,7 @@ func PaymentsHandler(c *gin.Context) {
 		handleError("PaymentsHandler", c, err, httpRes)
 		return
 	}
-	if res.Action.PaymentData != "" {
+	if res.Action != nil && res.Action.PaymentData != "" {
 		c.SetCookie(PaymentDataCookie, res.Action.PaymentData, 3600, "", "localhost", false, true)
 	}
 	c.JSON(http.StatusOK, res)
