@@ -89,7 +89,12 @@ class ApiServicesUtil constructor(context: Context) {
 
         return try {
             val response = future.get() // this will block
-            CallResult(CallResult.ResultType.ACTION, response.getString("action"))
+            val action = response.getString("action")
+            if (action.isNullOrEmpty()) {
+                CallResult(CallResult.ResultType.FINISHED, response.getString("resultCode"))
+            } else {
+                CallResult(CallResult.ResultType.ACTION, action)
+            }
         } catch (e: Exception) {
             CallResult(CallResult.ResultType.ERROR, e.toString())
         }
@@ -110,7 +115,7 @@ class ApiServicesUtil constructor(context: Context) {
             val response = future.get() // this will block
             CallResult(CallResult.ResultType.FINISHED, response.getString("resultCode"))
         } catch (e: Exception) {
-            CallResult(CallResult.ResultType.ERROR, e.toString());
+            CallResult(CallResult.ResultType.ERROR, e.toString())
         }
     }
 }

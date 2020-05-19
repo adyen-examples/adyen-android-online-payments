@@ -47,6 +47,7 @@ class DropinFragment : Fragment() {
             amount.currency = "EUR"
             amount.value = 1000
 
+            // Activity launch on result
             val intent = Intent(root.context, ResultActivity::class.java)
 
             dropInConfiguration =
@@ -65,7 +66,7 @@ class DropinFragment : Fragment() {
         })
 
 
-        val btnCheckout: Button = root.findViewById(R.id.btn_checkout);
+        val btnCheckout: Button = root.findViewById(R.id.btn_checkout)
         btnCheckout.setOnClickListener { view ->
             apiServicesUtil.getPaymentMethods(
                 {
