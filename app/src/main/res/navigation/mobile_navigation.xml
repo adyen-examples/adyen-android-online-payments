@@ -13,8 +13,8 @@
 
     <fragment
         android:id="@+id/navigation_components"
-        android:name="com.example.adyen.checkout.ui.components.ComponentsFragment"
+        android:name="com.example.adyen.checkout.ui.components.ComponentSelectContainerFragment"
         android:label="@string/title_components"
-        tools:layout="@layout/fragment_components" />
+        tools:layout="@layout/fragment_component_select_container" />
 
 </navigation>

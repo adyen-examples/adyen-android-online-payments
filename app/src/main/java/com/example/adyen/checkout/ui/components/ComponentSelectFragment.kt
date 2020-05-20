@@ -1,4 +1,4 @@
-package com.example.adyen.checkout.ui.cart
+package com.example.adyen.checkout.ui.components
 
 import android.content.Context
 import android.os.Bundle
@@ -10,14 +10,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adyen.checkout.R
-import com.example.adyen.checkout.ui.cart.CartContent.CartItem
+import com.example.adyen.checkout.ui.components.ComponentSelectContent.ComponentSelectItem
+
 
 /**
  * A fragment representing a list of Items.
  * Activities containing this fragment MUST implement the
- * [CartViewFragment.OnListFragmentInteractionListener] interface.
+ * [ComponentSelectFragment.OnListFragmentInteractionListener] interface.
  */
-class CartViewFragment : Fragment() {
+class ComponentSelectFragment : Fragment() {
 
     // number of columns per list row
     private var columnCount = 1
@@ -27,7 +28,7 @@ class CartViewFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_cart_view_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_component_select_list, container, false)
 
         // Set the adapter
         if (view is RecyclerView) {
@@ -36,7 +37,7 @@ class CartViewFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = CartRecyclerViewAdapter(CartContent.ITEMS, listener)
+                adapter = ComponentSelectRecyclerViewAdapter(ComponentSelectContent.ITEMS, listener)
             }
         }
         return view
@@ -68,8 +69,7 @@ class CartViewFragment : Fragment() {
      * for more information.
      */
     interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(item: CartItem?) {
-            // do nothing since its a dummy shopping cart item for demo
-        }
+        fun onListFragmentInteraction(item: ComponentSelectItem?)
     }
+
 }

@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adyen.checkout.R
-import com.example.adyen.checkout.data.CartContent.CartItem
+import com.example.adyen.checkout.ui.cart.CartContent.CartItem
 import com.example.adyen.checkout.ui.cart.CartViewFragment.OnListFragmentInteractionListener
 import kotlinx.android.synthetic.main.fragment_cart_view.view.*
 
@@ -17,10 +17,10 @@ import kotlinx.android.synthetic.main.fragment_cart_view.view.*
  * specified [OnListFragmentInteractionListener].
  * TODO: Replace the implementation with code for your data type.
  */
-class MyCartRecyclerViewAdapter(
+class CartRecyclerViewAdapter(
     private val mValues: List<CartItem>,
     private val mListener: OnListFragmentInteractionListener?
-) : RecyclerView.Adapter<MyCartRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<CartRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
 

@@ -14,12 +14,11 @@ import com.adyen.checkout.dropin.DropIn
 import com.adyen.checkout.dropin.DropInConfiguration
 import com.adyen.checkout.dropin.service.CallResult
 import com.adyen.checkout.dropin.service.DropInService
-import com.adyen.checkout.redirect.RedirectComponent
 import com.android.volley.Response
 import com.example.adyen.checkout.R
-import com.example.adyen.checkout.ui.result.ResultActivity
 import com.example.adyen.checkout.service.ApiServicesUtil
 import com.example.adyen.checkout.service.Utils
+import com.example.adyen.checkout.ui.result.ResultActivity
 import org.json.JSONObject
 import java.util.*
 

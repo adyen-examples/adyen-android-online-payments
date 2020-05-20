@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.adyen.checkout.R
 
-class ComponentsFragment : Fragment() {
 
+class ComponentSelectContainerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_components, container, false)
+        return inflater.inflate(R.layout.fragment_component_select_container, container, false)
     }
 }
