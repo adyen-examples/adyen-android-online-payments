@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import com.adyen.checkout.base.model.PaymentMethodsApiResponse
 import com.adyen.checkout.base.model.payments.Amount
 import com.adyen.checkout.card.CardConfiguration
 import com.adyen.checkout.core.api.Environment
@@ -26,8 +27,9 @@ import java.util.*
 class DropinFragment : Fragment() {
 
     private var shopperLocale = Locale.ENGLISH
-    private lateinit var dropInConfiguration: DropInConfiguration
     private lateinit var apiServicesUtil: ApiServicesUtil
+    private var dropInConfiguration: DropInConfiguration? = null
+    private var paymentMethodResp: PaymentMethodsApiResponse? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +38,13 @@ class DropinFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_dropin, container, false)
         apiServicesUtil = ApiServicesUtil.getInstance(root.context)
+
+        apiServicesUtil.getPaymentMethods(
+            {
+                paymentMethodResp = it
+            }, Response.ErrorListener {
+                Utils.showError(root, "Error getting payment methods! $it")
+            })
 
         apiServicesUtil.getConfig(Response.Listener {
             val cardConfiguration =
@@ -65,19 +74,17 @@ class DropinFragment : Fragment() {
             Utils.showError(root, "Error getting config! $it")
         })
 
-
         val btnCheckout: Button = root.findViewById(R.id.btn_checkout)
-        btnCheckout.setOnClickListener { view ->
-            apiServicesUtil.getPaymentMethods(
-                {
-                    DropIn.startPayment(
-                        root.context,
-                        it,
-                        dropInConfiguration
-                    )
-                }, Response.ErrorListener {
-                    Utils.showError(view, "Error getting payment methods! $it")
-                })
+        btnCheckout.setOnClickListener {
+            if (paymentMethodResp != null && dropInConfiguration != null) {
+                DropIn.startPayment(
+                    root.context,
+                    paymentMethodResp!!,
+                    dropInConfiguration!!
+                )
+            } else {
+                Utils.showError(root, "Payment Methods not found!")
+            }
         }
 
         return root

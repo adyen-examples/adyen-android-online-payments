@@ -2,6 +2,7 @@ package com.example.adyen.checkout.service
 
 import android.content.Context
 import com.adyen.checkout.base.model.PaymentMethodsApiResponse
+import com.adyen.checkout.base.model.paymentmethods.PaymentMethod
 import com.adyen.checkout.dropin.service.CallResult
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -11,6 +12,7 @@ import com.android.volley.toolbox.RequestFuture
 import com.android.volley.toolbox.Volley
 import com.example.adyen.checkout.BuildConfig
 import org.json.JSONObject
+import java.util.concurrent.TimeUnit
 
 class ApiServicesUtil constructor(context: Context) {
     companion object {
@@ -76,6 +78,12 @@ class ApiServicesUtil constructor(context: Context) {
         queue.add(stringRequest)
     }
 
+    fun filterPaymentMethodByType(ls: MutableList<PaymentMethod>?, type: ComponentType): PaymentMethod? {
+        return if (ls != null) {
+            ls.filter { it.type == type.id }[0]
+        } else null
+    }
+
     // This is synchronous request
     fun initPayment(req: JSONObject): CallResult {
         return makeSyncPaymentRequest(
@@ -90,17 +98,8 @@ class ApiServicesUtil constructor(context: Context) {
     }
 
     private fun makeSyncPaymentRequest(url: String, req: JSONObject): CallResult {
-        val future = RequestFuture.newFuture<JSONObject>()
-        val request = JsonObjectRequest(
-            url,
-            req,
-            future,
-            future
-        )
-        queue.add(request)
-
         return try {
-            val response = future.get() // this will block
+            val response = makeSyncRequest(url, req) // this will block
             if (response.isNull("action")) {
                 CallResult(CallResult.ResultType.FINISHED, response.getString("resultCode"))
             } else {
@@ -109,5 +108,20 @@ class ApiServicesUtil constructor(context: Context) {
         } catch (e: Exception) {
             CallResult(CallResult.ResultType.ERROR, e.toString())
         }
+    }
+
+
+    private fun makeSyncRequest(url: String, req: JSONObject?): JSONObject {
+        val future = RequestFuture.newFuture<JSONObject>()
+        val request = JsonObjectRequest(
+            Request.Method.POST,
+            url,
+            req,
+            future,
+            future
+        )
+        queue.add(request)
+
+        return future.get(5, TimeUnit.SECONDS)
     }
 }

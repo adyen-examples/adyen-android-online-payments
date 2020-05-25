@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.fragment_cart_view.view.*
 /**
  * [RecyclerView.Adapter] that can display a [CartItem] and makes a call to the
  * specified [OnListFragmentInteractionListener].
- * TODO: Replace the implementation with code for your data type.
  */
 class CartRecyclerViewAdapter(
     private val mValues: List<CartItem>,
@@ -41,7 +40,11 @@ class CartRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        val image = holder.itemView.context.resources.getIdentifier(item.image, "drawable", "com.example.adyen.checkout")
+        val image = holder.itemView.context.resources.getIdentifier(
+            item.image,
+            "drawable",
+            "com.example.adyen.checkout"
+        )
         holder.mImageView.setBackgroundResource(image)
         holder.mNameView.text = item.name
         holder.mPriceView.text = item.price.toString()

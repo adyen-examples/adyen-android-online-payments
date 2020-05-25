@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.adyen.checkout.R
 
-
+// This is just a container view
 class ComponentSelectContainerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
