@@ -68,7 +68,7 @@ class ComponentsFragment(private val type: ComponentType) : Fragment() {
                     CARD -> {
                         // first get config securely from backend
                         apiServicesUtil.getConfig(Response.Listener {
-
+                            TODO()
                         }, Response.ErrorListener {
                             Utils.showError(root, "Error getting config! $it")
                         })
