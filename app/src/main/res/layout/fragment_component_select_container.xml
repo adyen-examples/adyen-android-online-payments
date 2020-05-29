@@ -8,7 +8,7 @@
     android:layout_gravity="center_vertical"
     android:orientation="vertical">
 
-    <androidx.fragment.app.FragmentContainerView
+    <fragment
         android:id="@+id/select_list"
         android:name="com.example.adyen.checkout.ui.components.ComponentSelectFragment"
         android:layout_width="match_parent"

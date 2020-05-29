@@ -14,7 +14,7 @@
         android:usesCleartextTraffic="true">
 
         <service
-            android:name=".ui.dropin.DropinFragment$DropinService"
+            android:name=".service.DropinService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity android:name=".ui.result.ResultActivity" />

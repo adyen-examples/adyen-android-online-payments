@@ -14,13 +14,13 @@ import com.example.adyen.checkout.BuildConfig
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
-class ApiServicesUtil constructor(context: Context) {
+class CheckoutApiService(context: Context) {
     companion object {
         @Volatile
-        private var INSTANCE: ApiServicesUtil? = null
+        private var INSTANCE: CheckoutApiService? = null
         fun getInstance(context: Context) =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: ApiServicesUtil(context).also {
+                INSTANCE ?: CheckoutApiService(context).also {
                     INSTANCE = it
                 }
             }

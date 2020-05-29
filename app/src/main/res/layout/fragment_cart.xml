@@ -27,7 +27,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.fragment.app.FragmentContainerView
+    <fragment
         android:id="@+id/cart_view"
         android:name="com.example.adyen.checkout.ui.cart.CartViewFragment"
         android:layout_width="match_parent"

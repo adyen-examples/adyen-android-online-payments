@@ -18,7 +18,7 @@ import com.adyen.checkout.issuerlist.IssuerListComponent
 import com.adyen.checkout.issuerlist.IssuerListConfiguration
 import com.android.volley.Response
 import com.example.adyen.checkout.R
-import com.example.adyen.checkout.service.ApiServicesUtil
+import com.example.adyen.checkout.service.CheckoutApiService
 import com.example.adyen.checkout.service.ComponentType
 import com.example.adyen.checkout.service.ComponentType.CARD
 import com.example.adyen.checkout.service.ComponentType.IDEAL
@@ -27,7 +27,7 @@ import java.util.*
 
 class ComponentsFragment(private val type: ComponentType) : Fragment() {
     private var shopperLocale = Locale.ENGLISH
-    private lateinit var apiServicesUtil: ApiServicesUtil
+    private lateinit var checkoutApiService: CheckoutApiService
     private var compConfiguration: IssuerListConfiguration? = null
     private lateinit var component: IssuerListComponent<IssuerListPaymentMethod>
     private var paymentMethodResp: PaymentMethodsApiResponse? = null
@@ -38,9 +38,9 @@ class ComponentsFragment(private val type: ComponentType) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_components, container, false)
-        apiServicesUtil = ApiServicesUtil.getInstance(root.context)
+        checkoutApiService = CheckoutApiService.getInstance(root.context)
 
-        apiServicesUtil.getPaymentMethods(
+        checkoutApiService.getPaymentMethods(
             {
                 paymentMethodResp = it
                 when (this.type) {
@@ -53,21 +53,21 @@ class ComponentsFragment(private val type: ComponentType) : Fragment() {
 
                         component = IdealComponent.PROVIDER.get(
                             this,
-                            apiServicesUtil.filterPaymentMethodByType(paymentMethodResp!!.paymentMethods, IDEAL)!!,
+                            checkoutApiService.filterPaymentMethodByType(paymentMethodResp!!.paymentMethods, IDEAL)!!,
                             compConfiguration as IdealConfiguration
                         ) as IssuerListComponent<IssuerListPaymentMethod>
 
                         component.observe(this, Observer { itm ->
                             if (itm?.isValid == true) {
                                 // When the shopper proceeds to pay, pass the `it.data` to your server to send a /payments request
-                                ApiServicesUtil.getInstance(root.context)
+                                CheckoutApiService.getInstance(root.context)
                                     .initPayment(PaymentComponentData.SERIALIZER.serialize(itm.data))
                             }
                         })
                     }
                     CARD -> {
                         // first get config securely from backend
-                        apiServicesUtil.getConfig(Response.Listener {
+                        checkoutApiService.getConfig(Response.Listener {
                             TODO()
                         }, Response.ErrorListener {
                             Utils.showError(root, "Error getting config! $it")

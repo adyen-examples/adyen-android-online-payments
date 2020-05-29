@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".ui.components.ComponentsFragment">
 
-    <androidx.fragment.app.FragmentContainerView
+    <fragment
         android:id="@+id/cart_view"
         android:name="com.example.adyen.checkout.ui.cart.CartFragment"
         android:layout_width="match_parent"
