@@ -38,10 +38,8 @@ class ComponentsFragment(private val type: ComponentType) : Fragment() {
                 btnCheckout.isEnabled = true
                 btnCheckout.setOnClickListener {
                     when (this.type) {
-                        IDEAL -> {
-                            IdealActivity.start(root.context, pm)
-                        }
-                        CARD -> TODO()
+                        IDEAL -> IdealActivity.start(root.context, pm)
+                        CARD -> CardActivity.start(root.context, pm)
                     }
                 }
             } else {

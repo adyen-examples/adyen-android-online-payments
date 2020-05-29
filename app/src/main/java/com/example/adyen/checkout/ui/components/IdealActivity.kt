@@ -15,6 +15,7 @@ import com.adyen.checkout.redirect.RedirectComponent
 import com.example.adyen.checkout.R
 import com.example.adyen.checkout.service.CheckoutApiService
 import com.example.adyen.checkout.service.Utils
+import com.example.adyen.checkout.ui.result.ResultActivity
 import kotlinx.android.synthetic.main.activity_ideal.*
 import java.util.*
 
@@ -72,6 +73,11 @@ class IdealActivity : AppCompatActivity() {
         viewModel.actionData.observe(this, Observer {
             val redirectComponent = RedirectComponent.PROVIDER.get(this)
             redirectComponent.handleAction(this, it)
+        })
+
+        viewModel.paymentResData.observe(this, Observer {
+            // start result intent
+            ResultActivity.start(this, it)
         })
     }
 }

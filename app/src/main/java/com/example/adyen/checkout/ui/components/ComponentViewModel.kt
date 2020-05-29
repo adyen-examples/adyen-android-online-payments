@@ -3,7 +3,6 @@ package com.example.adyen.checkout.ui.components
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.adyen.checkout.base.component.Configuration
 import com.adyen.checkout.base.model.paymentmethods.PaymentMethod
 import com.adyen.checkout.base.model.payments.response.Action
 import com.android.volley.Response
@@ -17,6 +16,7 @@ class ComponentViewModel(private val checkoutApiService: CheckoutApiService) : V
 
     private var shopperLocale = Locale.ENGLISH
     val paymentMethodsData: MutableLiveData<PaymentMethod> = MutableLiveData()
+    val configData: MutableLiveData<JSONObject> = MutableLiveData()
     val errorMsgData: MutableLiveData<String> = MutableLiveData()
     val paymentResData: MutableLiveData<String> = MutableLiveData()
     val actionData: MutableLiveData<Action> = MutableLiveData()
@@ -30,17 +30,12 @@ class ComponentViewModel(private val checkoutApiService: CheckoutApiService) : V
             })
     }
 
-//    fun fetchCardPaymentConfig() {
-//        // first get config securely from backend
-//        checkoutApiService.getConfig(Response.Listener { c ->
-//            compConfigurationData.value = Pair(
-//                CardConfiguration.Builder(shopperLocale, Environment.TEST, c.getString("clientPublicKey")).build(),
-//                checkoutApiService.filterPaymentMethodByType(it.paymentMethods, ComponentType.CARD)!!
-//            )
-//        }, Response.ErrorListener { err ->
-//            errorMsgData.value = "Error getting config! $err"
-//        })
-//    }
+    fun fetchConfig() {
+        checkoutApiService.getConfig(Response.Listener { configData.value = it },
+            Response.ErrorListener { err ->
+                errorMsgData.value = "Error getting config! $err"
+            })
+    }
 
     fun initPayment(paymentComponentData: JSONObject) {
         checkoutApiService.initPayment(paymentComponentData, Response.Listener {
