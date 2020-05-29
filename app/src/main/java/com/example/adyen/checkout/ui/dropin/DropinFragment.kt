@@ -16,7 +16,6 @@ import com.example.adyen.checkout.service.Utils
 
 class DropinFragment : Fragment() {
 
-    private lateinit var checkoutApiService: CheckoutApiService
     private var dropInConfiguration: DropInConfiguration? = null
 
     override fun onCreateView(
@@ -25,8 +24,6 @@ class DropinFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_dropin, container, false)
-        checkoutApiService = CheckoutApiService.getInstance(root.context)
-
         val viewModel =
             ViewModelProviders.of(this, DropinViewModelFactory(CheckoutApiService.getInstance(root.context)))
                 .get(DropinViewModel::class.java)

@@ -6,4 +6,6 @@
     <string name="text_total">Total: 10.00</string>
     <string name="text_btn_checkout">Checkout</string>
     <string name="text_btn_home">Home</string>
+    <string name="pay">Pay</string>
+    <string name="processing">Processing...</string>
 </resources>

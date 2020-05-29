@@ -3,7 +3,6 @@ package com.example.adyen.checkout.service
 import android.content.Context
 import com.adyen.checkout.base.model.PaymentMethodsApiResponse
 import com.adyen.checkout.base.model.paymentmethods.PaymentMethod
-import com.adyen.checkout.dropin.service.CallResult
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -47,15 +46,15 @@ class CheckoutApiService(context: Context) {
     ) {
         val url = "$baseURL/getConfig"
 
-        // Request a string response from the provided URL.
-        val stringRequest = JsonObjectRequest(
+        // Request a json response from the provided URL.
+        val request = JsonObjectRequest(
             Request.Method.GET, url, null,
             resultListener,
             errorListener
         )
 
         // Add the request to the RequestQueue.
-        queue.add(stringRequest)
+        queue.add(request)
     }
 
     // This is asynchronous request
@@ -65,8 +64,8 @@ class CheckoutApiService(context: Context) {
     ) {
         val url = "$baseURL/getPaymentMethods"
 
-        // Request a string response from the provided URL.
-        val stringRequest = JsonObjectRequest(
+        // Request a json response from the provided URL.
+        val request = JsonObjectRequest(
             Request.Method.POST, url, null,
             Response.Listener { response ->
                 resultListener(PaymentMethodsApiResponse.SERIALIZER.deserialize(response))
@@ -75,7 +74,7 @@ class CheckoutApiService(context: Context) {
         )
 
         // Add the request to the RequestQueue.
-        queue.add(stringRequest)
+        queue.add(request)
     }
 
     fun filterPaymentMethodByType(ls: MutableList<PaymentMethod>?, type: ComponentType): PaymentMethod? {
@@ -84,30 +83,55 @@ class CheckoutApiService(context: Context) {
         } else null
     }
 
+    // This is asynchronous request
+    fun initPayment(
+        req: JSONObject,
+        resultListener: Response.Listener<JSONObject>,
+        errorListener: Response.ErrorListener
+    ) {
+        val url = "$baseURL/initiatePayment"
+
+        // Request a json response from the provided URL.
+        val request = JsonObjectRequest(
+            Request.Method.POST, url, req.getJSONObject("paymentMethod"),
+            resultListener,
+            errorListener
+        )
+
+        // Add the request to the RequestQueue.
+        queue.add(request)
+    }
+
     // This is synchronous request
-    fun initPayment(req: JSONObject): CallResult {
-        return makeSyncPaymentRequest(
+    fun initPayment(req: JSONObject): JSONObject {
+        return makeSyncRequest(
             "$baseURL/initiatePayment",
             req.getJSONObject("paymentMethod")
         )
     }
 
     // This is synchronous request
-    fun submitAdditionalDetails(req: JSONObject): CallResult {
-        return makeSyncPaymentRequest("$baseURL/submitAdditionalDetails", req)
+    fun submitAdditionalDetails(
+        req: JSONObject,
+        resultListener: Response.Listener<JSONObject>,
+        errorListener: Response.ErrorListener
+    ) {
+        val url = "$baseURL/submitAdditionalDetails"
+
+        // Request a json response from the provided URL.
+        val request = JsonObjectRequest(
+            Request.Method.POST, url, req,
+            resultListener,
+            errorListener
+        )
+
+        // Add the request to the RequestQueue.
+        queue.add(request)
     }
 
-    private fun makeSyncPaymentRequest(url: String, req: JSONObject): CallResult {
-        return try {
-            val response = makeSyncRequest(url, req) // this will block
-            if (response.isNull("action")) {
-                CallResult(CallResult.ResultType.FINISHED, response.getString("resultCode"))
-            } else {
-                CallResult(CallResult.ResultType.ACTION, response.getString("action"))
-            }
-        } catch (e: Exception) {
-            CallResult(CallResult.ResultType.ERROR, e.toString())
-        }
+    // This is asynchronous request
+    fun submitAdditionalDetails(req: JSONObject): JSONObject {
+        return makeSyncRequest("$baseURL/submitAdditionalDetails", req)
     }
 
 

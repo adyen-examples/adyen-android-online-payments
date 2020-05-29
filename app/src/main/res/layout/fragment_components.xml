@@ -21,11 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:background="@color/colorPrimary"
+        android:enabled="false"
         android:text="@string/text_btn_checkout" />
-
-    <com.adyen.checkout.ideal.IdealSpinnerView
-        android:id="@+id/ideal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 </LinearLayout>
