@@ -14,11 +14,12 @@ Demos of the following Android client-side integrations are currently available 
   - [x] Credit card
   - [x] Credit card 3DS2
   - [x] PaySafeCard
+  - [x] Klarna pay later
 
 - [Component](https://docs.adyen.com/checkout/components-web)
   - [x] Ideal
   - [x] Credit card
-  - [x] Credit card 3DS2
+  - [ ] Credit card 3DS2
   - [ ] PaySafeCard
   - [ ] giropay
   - [ ] Dotpay

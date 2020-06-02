@@ -36,7 +36,7 @@
 
                 <data
                     android:host="${applicationId}"
-                    android:scheme="adyencheckout" />
+                    android:scheme="adyencheckoutcomp" />
             </intent-filter>
         </activity>
     </application>

@@ -109,14 +109,14 @@ class CheckoutApiService() {
     }
 
     // This is synchronous request
-    fun initPayment(req: JSONObject): JSONObject {
+    fun initPayment(req: JSONObject, type: String): JSONObject {
         return makeSyncRequest(
-            "$baseURL/initiatePayment",
+            "$baseURL/initiatePayment?type=$type",
             req.getJSONObject("paymentMethod")
         )
     }
 
-    // This is synchronous request
+    // This is asynchronous request
     fun submitAdditionalDetails(
         req: JSONObject,
         resultListener: Response.Listener<JSONObject>,
@@ -135,7 +135,7 @@ class CheckoutApiService() {
         queue.add(request)
     }
 
-    // This is asynchronous request
+    // This is synchronous request
     fun submitAdditionalDetails(req: JSONObject): JSONObject {
         return makeSyncRequest("$baseURL/submitAdditionalDetails", req)
     }

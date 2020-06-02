@@ -63,16 +63,27 @@ func PaymentMethodsHandler(c *gin.Context) {
 // PaymentsHandler makes payment using Adyen API
 func PaymentsHandler(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
-	var req = checkout.PaymentRequest{}
 	var paymentMethod map[string]interface{}
 	if err := c.BindJSON(&paymentMethod); err != nil {
 		handleError("PaymentsHandler", c, err, nil)
 		return
 	}
-	req.MerchantAccount = merchantAccount
-	req.PaymentMethod = paymentMethod
-	req.Amount = checkout.Amount{Currency: "EUR", Value: 1000}
-	req.Reference = fmt.Sprintf("%v", time.Now())
+	reqType := c.Query("type")
+	req := checkout.PaymentRequest{
+		MerchantAccount: merchantAccount,
+		PaymentMethod:   paymentMethod,
+		Amount:          checkout.Amount{Currency: "EUR", Value: 1000},
+		Reference:       fmt.Sprintf("%v", time.Now()),
+		Channel:         "Android",
+		AdditionalData: map[string]interface{}{
+			"allow3DS2": true,
+		},
+	}
+	if reqType == "drop-in" {
+		req.ReturnUrl = "adyencheckout://com.example.adyen.checkout"
+	} else {
+		req.ReturnUrl = "adyencheckoutcomp://com.example.adyen.checkout"
+	}
 	if paymentMethod["type"] == "klarna" {
 		req.CountryCode = "DE"
 		req.ShopperReference = "12345"
@@ -98,11 +109,6 @@ func PaymentsHandler(c *gin.Context) {
 				AmountIncludingTax: 300,
 			},
 		}
-	}
-	req.ReturnUrl = "adyencheckout://com.example.adyen.checkout"
-	req.Channel = "Android"
-	req.AdditionalData = map[string]interface{}{
-		"allow3DS2": true,
 	}
 
 	log.Printf("Request for %s API::\n%+v\n", "Payments", req)

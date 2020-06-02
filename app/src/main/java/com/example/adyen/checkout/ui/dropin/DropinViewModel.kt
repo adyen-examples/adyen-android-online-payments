@@ -12,6 +12,7 @@ import com.adyen.checkout.core.api.Environment
 import com.adyen.checkout.dropin.DropInConfiguration
 import com.android.volley.Response
 import com.example.adyen.checkout.service.CheckoutApiService
+import com.example.adyen.checkout.service.ComponentType
 import com.example.adyen.checkout.service.DropinService
 import com.example.adyen.checkout.ui.result.ResultActivity
 import java.util.*
@@ -45,7 +46,9 @@ class DropinViewModel(private val checkoutApiService: CheckoutApiService) : View
             amount.value = 1000
 
             // Activity launch on result
-            val intent = Intent(ctx, ResultActivity::class.java)
+            val intent = Intent(ctx, ResultActivity::class.java).apply {
+                putExtra(ResultActivity.TYPE_KEY, ComponentType.DROPIN.id)
+            }
 
             dropinConfigData.value =
                 DropInConfiguration.Builder(ctx, intent, DropinService::class.java)

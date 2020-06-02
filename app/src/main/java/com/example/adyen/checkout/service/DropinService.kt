@@ -8,7 +8,7 @@ class DropinService : DropInService() {
     private var checkoutApiService = CheckoutApiService.getInstance()
 
     override fun makePaymentsCall(paymentComponentData: JSONObject): CallResult {
-        return handlePaymentRequestResult(checkoutApiService.initPayment(paymentComponentData))
+        return handlePaymentRequestResult(checkoutApiService.initPayment(paymentComponentData, ComponentType.DROPIN.id))
     }
 
     override fun makeDetailsCall(actionComponentData: JSONObject): CallResult {
