@@ -41,7 +41,7 @@ class CardActivity : AppCompatActivity() {
         setContentView(R.layout.activity_card)
 
         val viewModel =
-            ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance(this)))
+            ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))
                 .get(ComponentViewModel::class.java)
 
         viewModel.errorMsgData.observe(this, Observer {

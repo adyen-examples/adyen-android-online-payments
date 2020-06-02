@@ -5,7 +5,7 @@ import com.adyen.checkout.dropin.service.DropInService
 import org.json.JSONObject
 
 class DropinService : DropInService() {
-    private var checkoutApiService = CheckoutApiService.getInstance(this.applicationContext)
+    private var checkoutApiService = CheckoutApiService.getInstance()
 
     override fun makePaymentsCall(paymentComponentData: JSONObject): CallResult {
         return handlePaymentRequestResult(checkoutApiService.initPayment(paymentComponentData))

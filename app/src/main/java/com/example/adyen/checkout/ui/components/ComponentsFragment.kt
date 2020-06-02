@@ -25,7 +25,7 @@ class ComponentsFragment(private val type: ComponentType) : Fragment() {
         val root = inflater.inflate(R.layout.fragment_components, container, false)
 
         val viewModel =
-            ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance(root.context)))
+            ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))
                 .get(ComponentViewModel::class.java)
 
         viewModel.errorMsgData.observe(this, Observer {

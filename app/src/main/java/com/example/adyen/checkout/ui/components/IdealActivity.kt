@@ -37,7 +37,7 @@ class IdealActivity : AppCompatActivity() {
         setContentView(R.layout.activity_ideal)
 
         val viewModel =
-            ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance(this)))
+            ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))
                 .get(ComponentViewModel::class.java)
 
         viewModel.errorMsgData.observe(this, Observer {

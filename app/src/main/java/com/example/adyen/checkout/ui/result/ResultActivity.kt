@@ -9,19 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.adyen.checkout.base.ActionComponentData
-import com.adyen.checkout.base.model.paymentmethods.PaymentMethod
-import com.adyen.checkout.dropin.DropIn
 import com.adyen.checkout.redirect.RedirectComponent
 import com.adyen.checkout.redirect.RedirectUtil
 import com.example.adyen.checkout.MainActivity
 import com.example.adyen.checkout.R
 import com.example.adyen.checkout.service.CheckoutApiService
-import com.example.adyen.checkout.service.Utils
-import com.example.adyen.checkout.ui.components.CardActivity
 import com.example.adyen.checkout.ui.components.ComponentViewModel
 import com.example.adyen.checkout.ui.components.ComponentViewModelFactory
-import kotlinx.android.synthetic.main.activity_ideal.*
-import kotlinx.android.synthetic.main.activity_result.*
 
 
 class ResultActivity : AppCompatActivity() {
@@ -51,7 +45,7 @@ class ResultActivity : AppCompatActivity() {
             startActivity(intent);
         }
 
-        val viewModel = ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance(this)))
+        val viewModel = ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))
             .get(ComponentViewModel::class.java)
 
         val redirectComponent = RedirectComponent.PROVIDER.get(this)

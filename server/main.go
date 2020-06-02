@@ -69,20 +69,50 @@ func PaymentsHandler(c *gin.Context) {
 		handleError("PaymentsHandler", c, err, nil)
 		return
 	}
-	req.PaymentMethod = paymentMethod
 	req.MerchantAccount = merchantAccount
+	req.PaymentMethod = paymentMethod
 	req.Amount = checkout.Amount{Currency: "EUR", Value: 1000}
 	req.Reference = fmt.Sprintf("%v", time.Now())
+	if paymentMethod["type"] == "klarna" {
+		req.CountryCode = "DE"
+		req.ShopperReference = "12345"
+		req.ShopperEmail = "youremail@email.com"
+		req.ShopperLocale = "en_US"
+		req.LineItems = &[]checkout.LineItem{
+			{
+				Quantity:           1,
+				AmountExcludingTax: 331,
+				TaxPercentage:      2100,
+				Description:        "Sunglasses",
+				Id:                 "Item 1",
+				TaxAmount:          69,
+				AmountIncludingTax: 400,
+			},
+			{
+				Quantity:           1,
+				AmountExcludingTax: 248,
+				TaxPercentage:      2100,
+				Description:        "Headphones",
+				Id:                 "Item 2",
+				TaxAmount:          52,
+				AmountIncludingTax: 300,
+			},
+		}
+	}
 	req.ReturnUrl = "adyencheckout://com.example.adyen.checkout"
+	req.Channel = "Android"
+	req.AdditionalData = map[string]interface{}{
+		"allow3DS2": true,
+	}
 
 	log.Printf("Request for %s API::\n%+v\n", "Payments", req)
 	res, httpRes, err := client.Checkout.Payments(&req)
-	log.Printf("Response for %s API::\n%+v\n", "Payments", res)
 	log.Printf("HTTP Response for %s API::\n%+v\n", "Payments", httpRes)
 	if err != nil {
 		handleError("PaymentsHandler", c, err, httpRes)
 		return
 	}
+	log.Printf("Response for %s API::\n%+v\n", "Payments", res)
 	if res.Action != nil && res.Action.PaymentData != "" {
 		c.SetCookie(PaymentDataCookie, res.Action.PaymentData, 3600, "", "localhost", false, true)
 	}

@@ -25,7 +25,7 @@ class DropinFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_dropin, container, false)
         val viewModel =
-            ViewModelProviders.of(this, DropinViewModelFactory(CheckoutApiService.getInstance(root.context)))
+            ViewModelProviders.of(this, DropinViewModelFactory(CheckoutApiService.getInstance()))
                 .get(DropinViewModel::class.java)
 
         viewModel.errorMsgData.observe(this, Observer {

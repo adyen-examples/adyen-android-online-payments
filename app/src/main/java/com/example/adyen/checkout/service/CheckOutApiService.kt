@@ -1,34 +1,40 @@
 package com.example.adyen.checkout.service
 
-import android.content.Context
 import com.adyen.checkout.base.model.PaymentMethodsApiResponse
 import com.adyen.checkout.base.model.paymentmethods.PaymentMethod
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.RequestFuture
-import com.android.volley.toolbox.Volley
+import com.android.volley.toolbox.*
 import com.example.adyen.checkout.BuildConfig
 import org.json.JSONObject
+import java.io.File
 import java.util.concurrent.TimeUnit
 
-class CheckoutApiService(context: Context) {
+class CheckoutApiService() {
     companion object {
         @Volatile
         private var INSTANCE: CheckoutApiService? = null
-        fun getInstance(context: Context) =
+        fun getInstance() =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: CheckoutApiService(context).also {
+                INSTANCE ?: CheckoutApiService().also {
                     INSTANCE = it
                 }
             }
     }
 
     private val queue: RequestQueue by lazy {
-        // applicationContext is key, it keeps you from leaking the
-        // Activity or BroadcastReceiver if someone passes one in.
-        Volley.newRequestQueue(context.applicationContext)
+        // Instantiate the cache
+        val cache = DiskBasedCache(File("volley")) // 1MB cap
+
+        // Set up the network to use HttpURLConnection as the HTTP client.
+        val network = BasicNetwork(HurlStack())
+
+        // Instantiate the RequestQueue with the cache and network. Start the queue.
+        RequestQueue(cache, network).apply {
+            start()
+        }
+
     }
 
     private val baseURL: String by lazy {
