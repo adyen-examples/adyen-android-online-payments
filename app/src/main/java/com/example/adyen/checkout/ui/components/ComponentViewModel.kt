@@ -3,18 +3,17 @@ package com.example.adyen.checkout.ui.components
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.adyen.checkout.base.model.PaymentMethodsApiResponse
 import com.adyen.checkout.base.model.paymentmethods.PaymentMethod
 import com.adyen.checkout.base.model.payments.response.Action
 import com.android.volley.Response
 import com.example.adyen.checkout.service.CheckoutApiService
 import com.example.adyen.checkout.service.ComponentType
 import org.json.JSONObject
-import java.util.*
 
 
 class ComponentViewModel(private val checkoutApiService: CheckoutApiService) : ViewModel() {
 
-    private var shopperLocale = Locale.ENGLISH
     val paymentMethodsData: MutableLiveData<PaymentMethod> = MutableLiveData()
     val configData: MutableLiveData<JSONObject> = MutableLiveData()
     val errorMsgData: MutableLiveData<String> = MutableLiveData()
@@ -23,8 +22,9 @@ class ComponentViewModel(private val checkoutApiService: CheckoutApiService) : V
 
     fun fetchPaymentMethod(type: ComponentType) {
         checkoutApiService.getPaymentMethods(
-            {
-                paymentMethodsData.value = checkoutApiService.filterPaymentMethodByType(it.paymentMethods, type)!!
+            Response.Listener {
+                val res = PaymentMethodsApiResponse.SERIALIZER.deserialize(it)
+                paymentMethodsData.value = checkoutApiService.filterPaymentMethodByType(res.paymentMethods, type)!!
             }, Response.ErrorListener {
                 errorMsgData.value = "Error getting payment methods! $it"
             })

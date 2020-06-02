@@ -1,6 +1,5 @@
 package com.example.adyen.checkout.service
 
-import com.adyen.checkout.base.model.PaymentMethodsApiResponse
 import com.adyen.checkout.base.model.paymentmethods.PaymentMethod
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -22,6 +21,9 @@ class CheckoutApiService() {
                 }
             }
     }
+
+    // This is a dump cache and works only if the app makes one payment request simultaneously
+    private var lastPaymentData: String? = null
 
     private val queue: RequestQueue by lazy {
         // Instantiate the cache
@@ -65,7 +67,7 @@ class CheckoutApiService() {
 
     // This is asynchronous request
     fun getPaymentMethods(
-        resultListener: (resp: PaymentMethodsApiResponse) -> Unit,
+        resultListener: Response.Listener<JSONObject>,
         errorListener: Response.ErrorListener
     ) {
         val url = "$baseURL/getPaymentMethods"
@@ -73,9 +75,7 @@ class CheckoutApiService() {
         // Request a json response from the provided URL.
         val request = JsonObjectRequest(
             Request.Method.POST, url, null,
-            Response.Listener { response ->
-                resultListener(PaymentMethodsApiResponse.SERIALIZER.deserialize(response))
-            },
+            resultListener,
             errorListener
         )
 
@@ -89,18 +89,22 @@ class CheckoutApiService() {
         } else null
     }
 
-    // This is asynchronous request
+    // This is asynchronous request used for components
     fun initPayment(
         req: JSONObject,
         resultListener: Response.Listener<JSONObject>,
         errorListener: Response.ErrorListener
     ) {
         val url = "$baseURL/initiatePayment"
-
         // Request a json response from the provided URL.
         val request = JsonObjectRequest(
             Request.Method.POST, url, req.getJSONObject("paymentMethod"),
-            resultListener,
+            Response.Listener { response ->
+                if (response.has("paymentData")) {
+                    lastPaymentData = response.getString("paymentData")
+                }
+                resultListener.onResponse(response)
+            },
             errorListener
         )
 
@@ -108,7 +112,7 @@ class CheckoutApiService() {
         queue.add(request)
     }
 
-    // This is synchronous request
+    // This is synchronous request used for drop-in
     fun initPayment(req: JSONObject, type: String): JSONObject {
         return makeSyncRequest(
             "$baseURL/initiatePayment?type=$type",
@@ -116,14 +120,18 @@ class CheckoutApiService() {
         )
     }
 
-    // This is asynchronous request
+    // This is asynchronous request used for components
     fun submitAdditionalDetails(
         req: JSONObject,
         resultListener: Response.Listener<JSONObject>,
         errorListener: Response.ErrorListener
     ) {
         val url = "$baseURL/submitAdditionalDetails"
-
+        // set the paymentData from the last payment request
+        if (lastPaymentData != null) {
+            req.accumulate("paymentData", lastPaymentData)
+            lastPaymentData = null
+        }
         // Request a json response from the provided URL.
         val request = JsonObjectRequest(
             Request.Method.POST, url, req,
@@ -135,7 +143,7 @@ class CheckoutApiService() {
         queue.add(request)
     }
 
-    // This is synchronous request
+    // This is synchronous request used for drop-in
     fun submitAdditionalDetails(req: JSONObject): JSONObject {
         return makeSyncRequest("$baseURL/submitAdditionalDetails", req)
     }

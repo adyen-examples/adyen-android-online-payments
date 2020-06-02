@@ -27,8 +27,8 @@ class DropinViewModel(private val checkoutApiService: CheckoutApiService) : View
 
     fun fetchPaymentMethods() {
         checkoutApiService.getPaymentMethods(
-            {
-                paymentMethodsResponseData.value = it
+            Response.Listener {
+                paymentMethodsResponseData.value = PaymentMethodsApiResponse.SERIALIZER.deserialize(it)
             }, Response.ErrorListener {
                 errorMsgData.value = "Error getting payment methods! $it"
             })
