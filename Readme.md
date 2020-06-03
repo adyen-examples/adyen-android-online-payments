@@ -19,14 +19,13 @@ Demos of the following Android client-side integrations are currently available 
 - [Component](https://docs.adyen.com/checkout/components-web)
   - [x] Ideal
   - [x] Credit card
-  - [ ] Credit card 3DS2
+  - [x] Credit card 3DS2
   - [ ] PaySafeCard
   - [ ] giropay
   - [ ] Dotpay
   - [ ] EPS
   - [ ] SOFORT
   - [ ] Bancontact card
-  - [ ] Paysafe card
 
 Each demo leverages Adyen's Library for Android ([GitHub](https://github.com/Adyen/adyen-android) | [Docs](https://docs.adyen.com/checkout/android)) and the Golang API library ([GitHub](https://github.com/Adyen/adyen-go-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries#go)) on the server side.
 
