@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.adyen.checkout.adyen3ds2.Adyen3DS2Component
 import com.adyen.checkout.base.ActionComponentData
 import com.adyen.checkout.redirect.RedirectComponent
 import com.example.adyen.checkout.MainActivity
