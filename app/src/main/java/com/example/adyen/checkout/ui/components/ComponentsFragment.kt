@@ -40,6 +40,7 @@ class ComponentsFragment(private val type: ComponentType) : Fragment() {
                     when (this.type) {
                         IDEAL -> IdealActivity.start(root.context, pm)
                         CARD -> CardActivity.start(root.context, pm)
+                        else -> Utils.showError(root, "Not implemented!")
                     }
                 }
             } else {

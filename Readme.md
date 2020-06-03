@@ -20,12 +20,6 @@ Demos of the following Android client-side integrations are currently available 
   - [x] Ideal
   - [x] Credit card
   - [x] Credit card 3DS2
-  - [ ] PaySafeCard
-  - [ ] giropay
-  - [ ] Dotpay
-  - [ ] EPS
-  - [ ] SOFORT
-  - [ ] Bancontact card
 
 Each demo leverages Adyen's Library for Android ([GitHub](https://github.com/Adyen/adyen-android) | [Docs](https://docs.adyen.com/checkout/android)) and the Golang API library ([GitHub](https://github.com/Adyen/adyen-go-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries#go)) on the server side.
 
@@ -47,7 +41,7 @@ git clone https://github.com/adyen-examples/adyen-android-online-payments.git
 
    1. Create a `.env` file with your [API key](https://docs.adyen.com/user-management/how-to-get-the-api-key), [Client public Key](https://docs.adyen.com/checkout/android/drop-in#get-your-client-encryption-public-key), server url, and merchant account name (all credentials are in string format):
 
-      If you are using the emulator, the server url can be `http://10.0.2.2:3000`. If you are using the emulator. If you use a real Android device, connect it to same network you have the server running and use the local IP of your network or WiFi router instead of `10.0.2.2`
+      If you are using the emulator, the server url can be `http://10.0.2.2:3000`. If you use a real Android device, connect it to same network you have the server running and use the local IP of your network or WiFi router instead of `10.0.2.2`
 
       ```
       API_KEY="your_API_key_here"
