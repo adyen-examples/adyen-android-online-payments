@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.adyen.checkout.adyen3ds2.Adyen3DS2Component
 import com.adyen.checkout.base.ActionComponentData
 import com.adyen.checkout.redirect.RedirectComponent
 import com.example.adyen.checkout.MainActivity
@@ -52,6 +53,7 @@ class ResultActivity : AppCompatActivity() {
             val viewModel = ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))
                 .get(ComponentViewModel::class.java)
 
+            // Redirection from payment is handled here as the flow redirects here
             val redirectComponent = RedirectComponent.PROVIDER.get(this)
             redirectComponent.observe(this, Observer {
                 viewModel.submitDetails(ActionComponentData.SERIALIZER.serialize(it))

@@ -128,8 +128,8 @@ class CheckoutApiService() {
     ) {
         val url = "$baseURL/submitAdditionalDetails"
         // set the paymentData from the last payment request
-        if (lastPaymentData != null) {
-            req.accumulate("paymentData", lastPaymentData)
+        if (!req.has("paymentData") && lastPaymentData != null) {
+            req.put("paymentData", lastPaymentData)
             lastPaymentData = null
         }
         // Request a json response from the provided URL.

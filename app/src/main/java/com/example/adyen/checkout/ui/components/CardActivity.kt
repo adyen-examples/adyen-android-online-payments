@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.adyen.checkout.adyen3ds2.Adyen3DS2Component
+import com.adyen.checkout.base.ActionComponentData
 import com.adyen.checkout.base.model.paymentmethods.PaymentMethod
 import com.adyen.checkout.base.model.payments.request.PaymentComponentData
 import com.adyen.checkout.base.model.payments.response.RedirectAction
@@ -45,7 +47,7 @@ class CardActivity : AppCompatActivity() {
                 .get(ComponentViewModel::class.java)
 
         viewModel.errorMsgData.observe(this, Observer {
-            Utils.showError(this.ideal, it)
+            Utils.showError(this.card, it)
         })
 
         viewModel.fetchConfig()
@@ -77,18 +79,20 @@ class CardActivity : AppCompatActivity() {
                 Utils.showError(this.ideal, "ERROR - ${it.errorMessage}")
             })
         })
+        val redirectComponent = RedirectComponent.PROVIDER.get(this)
+        val threedsComponent = Adyen3DS2Component.PROVIDER.get(this)
+        // Handle 3DS2 authentication from payment
+        threedsComponent.observe(this, Observer {
+            viewModel.submitDetails(ActionComponentData.SERIALIZER.serialize(it))
+        })
 
         viewModel.actionData.observe(this, Observer {
             when (it.type) {
                 RedirectAction.ACTION_TYPE -> {
-                    val redirectComponent = RedirectComponent.PROVIDER.get(this)
                     redirectComponent.handleAction(this, it)
                 }
-                Threeds2FingerprintAction.ACTION_TYPE -> {
-                    TODO()
-                }
-                Threeds2ChallengeAction.ACTION_TYPE -> {
-                    TODO()
+                Threeds2FingerprintAction.ACTION_TYPE, Threeds2ChallengeAction.ACTION_TYPE -> {
+                    threedsComponent.handleAction(this, it)
                 }
             }
         })
