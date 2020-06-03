@@ -6,6 +6,8 @@ This repository includes examples of Android application integrations for online
 
 ## Supported Integrations
 
+Make sure the payment method you want to use are enabled for your account. Refer the [documentation](https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account) to add missing payment methods.
+
 Demos of the following Android client-side integrations are currently available in this repository:
 
 - [Drop-in](https://docs.adyen.com/checkout/drop-in-web)
@@ -66,7 +68,9 @@ git clone https://github.com/adyen-examples/adyen-android-online-payments.git
 
    Open the project in Android Studio and run the `app/src/main/java/com/example/adyen/checkout/MainActivity.kt` from context menu. You must configure an emulator or setup a real device on Android Studio for this. You can follow [this guide](https://developer.android.com/training/basics/firstapp/running-app) for instructions.
 
-4. Visit the Android app called "Adyen Checkout Demo" on the emulated/real device to select an integration type.
+   Alternatively you can also install the APK in the `app/release/` folder.
+
+4. Visit the Android app called "Adyen Checkout Demo" on the emulated/real device and select Drop-in or Component from the bottom tab and choose an payment type.
 
    To try out integrations with test card numbers and payment method details, see [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers).
 

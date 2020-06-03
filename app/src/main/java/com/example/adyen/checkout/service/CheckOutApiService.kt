@@ -85,7 +85,8 @@ class CheckoutApiService() {
 
     fun filterPaymentMethodByType(ls: MutableList<PaymentMethod>?, type: ComponentType): PaymentMethod? {
         return if (ls != null) {
-            ls.filter { it.type == type.id }[0]
+            val f = ls.filter { it.type == type.id }
+            if (f.isNotEmpty()) f[0] else null
         } else null
     }
 
