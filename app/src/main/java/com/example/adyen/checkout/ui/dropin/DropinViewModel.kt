@@ -38,6 +38,7 @@ class DropinViewModel(private val checkoutApiService: CheckoutApiService) : View
         checkoutApiService.getConfig(Response.Listener {
             val cardConfiguration =
                 CardConfiguration.Builder(ctx, it.getString("clientPublicKey"))
+                    .setHolderNameRequire(true)
                     .setShopperLocale(shopperLocale)
                     .build()
             val amount = Amount()

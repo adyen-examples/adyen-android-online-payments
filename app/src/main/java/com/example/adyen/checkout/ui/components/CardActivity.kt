@@ -53,7 +53,7 @@ class CardActivity : AppCompatActivity() {
         viewModel.fetchConfig()
 
         viewModel.configData.observe(this, Observer { c ->
-            val config = CardConfiguration.Builder(shopperLocale, Environment.TEST, c.getString("clientPublicKey")).build()
+            val config = CardConfiguration.Builder(shopperLocale, Environment.TEST, c.getString("clientPublicKey")).setHolderNameRequire(true).build()
             val paymentMethod = intent.getParcelableExtra<PaymentMethod>(PM_KEY)
             val cardComponent = CardComponent.PROVIDER.get(
                 this,

@@ -70,20 +70,25 @@ func PaymentsHandler(c *gin.Context) {
 	}
 	reqType := c.Query("type")
 	req := checkout.PaymentRequest{
-		MerchantAccount: merchantAccount,
-		PaymentMethod:   paymentMethod,
-		Amount:          checkout.Amount{Currency: "EUR", Value: 1000},
-		Reference:       fmt.Sprintf("%v", time.Now()),
-		Channel:         "Android",
+		MerchantAccount: merchantAccount, // required
+		PaymentMethod:   paymentMethod,   // required
+		// value is 10€ in minor units, required
+		Amount:    checkout.Amount{Currency: "EUR", Value: 1000},
+		Reference: fmt.Sprintf("%v", time.Now()), // required
+		Channel:   "Android",                     // required
 		AdditionalData: map[string]interface{}{
+			// required for 3DS2 native flow
 			"allow3DS2": true,
 		},
 	}
+	// required for 3ds2 redirect flow and other redirects
 	if reqType == "drop-in" {
 		req.ReturnUrl = "adyencheckout://com.example.adyen.checkout"
 	} else {
 		req.ReturnUrl = "adyencheckoutcomp://com.example.adyen.checkout"
 	}
+	// Required for Klarna:
+
 	if paymentMethod["type"] == "klarna" {
 		req.CountryCode = "DE"
 		req.ShopperReference = "12345"
