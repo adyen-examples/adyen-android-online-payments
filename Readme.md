@@ -46,8 +46,8 @@ git clone https://github.com/adyen-examples/adyen-android-online-payments.git
       If you are using the emulator, the server url can be `http://10.0.2.2:3000`. If you use a real Android device, connect it to same network you have the server running and use the local IP of your network or WiFi router instead of `10.0.2.2`
 
       ```
-      API_KEY="YOUR_API_KEY"
-      MERCHANT_ACCOUNT="YOUR_MERCHANT_ACCOUNT"
+      ADYEN_API_KEY="YOUR_API_KEY"
+      ADYEN_MERCHANT="YOUR_MERCHANT_ACCOUNT"
       CLIENT_PUBLIC_KEY="YOUR_CLIENT_PUBLIC_KEY"
       SERVER_URL="YOUR_BACKEND_SERVER_URL"
       ```
