@@ -58,8 +58,11 @@ git clone https://github.com/adyen-examples/adyen-android-online-payments.git
 
       You can run the prebuilt binary if you don't have Go installed.
 
-      ```
-      ./app
+      ```bash
+      # on mac
+      ./app-macOS
+      # on Linux
+      ./app-linux
       ```
 
       You can also run `go run -v .` if you have Go installed.
