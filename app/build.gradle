@@ -55,7 +55,7 @@ dependencies {
     implementation 'com.adyen.checkout:drop-in:3.6.5'
     implementation 'com.adyen.checkout:card-ui:3.6.5'
     implementation 'com.adyen.checkout:ideal-ui:3.6.5'
-    implementation 'com.adyen.checkout:redirect:3.6.5'
+    implementation 'com.adyen.checkout:redirect:4.7.0'
     implementation 'com.adyen.checkout:3ds2:3.6.5'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     testImplementation 'junit:junit:4.12'
