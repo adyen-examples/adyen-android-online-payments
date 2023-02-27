@@ -4,13 +4,12 @@ apply plugin: 'kotlin-android-extensions'
 
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.example.adyen.checkout"
         minSdkVersion 26
-        targetSdkVersion 29
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
 
@@ -29,11 +28,11 @@ android {
 
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = '11'
+        targetCompatibility = '11'
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 
