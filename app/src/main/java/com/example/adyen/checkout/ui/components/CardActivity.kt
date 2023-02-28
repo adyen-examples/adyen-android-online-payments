@@ -3,30 +3,35 @@ package com.example.adyen.checkout.ui.components
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.adyen.checkout.adyen3ds2.Adyen3DS2Component
-import com.adyen.checkout.base.ActionComponentData
-import com.adyen.checkout.base.model.paymentmethods.PaymentMethod
-import com.adyen.checkout.base.model.payments.request.PaymentComponentData
-import com.adyen.checkout.base.model.payments.response.RedirectAction
-import com.adyen.checkout.base.model.payments.response.Threeds2ChallengeAction
-import com.adyen.checkout.base.model.payments.response.Threeds2FingerprintAction
 import com.adyen.checkout.card.CardComponent
 import com.adyen.checkout.card.CardConfiguration
+import com.adyen.checkout.card.CardView
+import com.adyen.checkout.components.ActionComponentData
+import com.adyen.checkout.components.model.paymentmethods.PaymentMethod
+import com.adyen.checkout.components.model.payments.request.PaymentComponentData
+import com.adyen.checkout.components.model.payments.response.RedirectAction
+import com.adyen.checkout.components.model.payments.response.Threeds2ChallengeAction
+import com.adyen.checkout.components.model.payments.response.Threeds2FingerprintAction
 import com.adyen.checkout.core.api.Environment
 import com.adyen.checkout.redirect.RedirectComponent
 import com.example.adyen.checkout.R
 import com.example.adyen.checkout.service.CheckoutApiService
 import com.example.adyen.checkout.service.Utils
 import com.example.adyen.checkout.ui.result.ResultActivity
-import kotlinx.android.synthetic.main.activity_card.*
-import kotlinx.android.synthetic.main.activity_ideal.*
 import java.util.*
 
 class CardActivity : AppCompatActivity() {
     private var shopperLocale = Locale.ENGLISH
+
+    private lateinit var card : ConstraintLayout;
+    private lateinit var card_view : CardView;
+    private lateinit var card_pay_button : Button;
 
     companion object {
         private const val PM_KEY = "payment_method"
@@ -42,6 +47,10 @@ class CardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_card)
 
+        card = findViewById(R.id.card)
+        card_view = findViewById(R.id.card_view)
+        card_pay_button = findViewById(R.id.card_pay_button)
+
         val viewModel =
             ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))
                 .get(ComponentViewModel::class.java)
@@ -53,7 +62,7 @@ class CardActivity : AppCompatActivity() {
         viewModel.fetchConfig()
 
         viewModel.configData.observe(this, Observer { c ->
-            val config = CardConfiguration.Builder(shopperLocale, Environment.TEST, c.getString("clientPublicKey")).setHolderNameRequire(true).build()
+            val config = CardConfiguration.Builder(shopperLocale, Environment.TEST, c.getString("clientPublicKey")).setHolderNameRequired(true).build()
             val paymentMethod = intent.getParcelableExtra<PaymentMethod>(PM_KEY)
             val cardComponent = CardComponent.PROVIDER.get(
                 this,
@@ -76,12 +85,13 @@ class CardActivity : AppCompatActivity() {
             })
 
             cardComponent.observeErrors(this, Observer {
-                Utils.showError(this.ideal, "ERROR - ${it.errorMessage}")
+                Utils.showError(this.card, "ERROR - ${it.errorMessage}")
             })
         })
+
         val redirectComponent = RedirectComponent.PROVIDER.get(this)
         val threedsComponent = Adyen3DS2Component.PROVIDER.get(this)
-        // Handle 3DS2 authentication from payment
+//         Handle 3DS2 authentication from payment
         threedsComponent.observe(this, Observer {
             viewModel.submitDetails(ActionComponentData.SERIALIZER.serialize(it))
         })

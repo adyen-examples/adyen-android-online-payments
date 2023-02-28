@@ -8,6 +8,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.adyen.checkout.components.model.PaymentMethodsApiResponse
 import com.adyen.checkout.dropin.DropIn
 import com.adyen.checkout.dropin.DropInConfiguration
 import com.example.adyen.checkout.R
@@ -28,21 +29,22 @@ class DropinFragment : Fragment() {
             ViewModelProviders.of(this, DropinViewModelFactory(CheckoutApiService.getInstance()))
                 .get(DropinViewModel::class.java)
 
-        viewModel.errorMsgData.observe(this, Observer {
+        viewModel.errorMsgData.observe(viewLifecycleOwner, Observer {
             Utils.showError(root, it)
         })
 
-        viewModel.dropinConfigData.observe(this, Observer {
+        viewModel.dropinConfigData.observe(viewLifecycleOwner, Observer {
             dropInConfiguration = it
         })
 
-        viewModel.paymentMethodsResponseData.observe(this, Observer { pmr ->
+        viewModel.paymentMethodsResponseData.observe(viewLifecycleOwner, Observer { pmr : PaymentMethodsApiResponse ->
             val btnCheckout: Button = root.findViewById(R.id.btn_checkout)
             btnCheckout.isEnabled = true
             btnCheckout.setOnClickListener {
                 if (dropInConfiguration != null) {
-                    DropIn.startPayment(
-                        root.context,
+                    DropIn.startPayment( // TODO : Working?
+//                        root.context,
+                        this,
                         pmr,
                         dropInConfiguration!!
                     )

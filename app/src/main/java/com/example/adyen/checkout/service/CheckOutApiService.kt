@@ -1,6 +1,6 @@
 package com.example.adyen.checkout.service
 
-import com.adyen.checkout.base.model.paymentmethods.PaymentMethod
+import com.adyen.checkout.components.model.paymentmethods.PaymentMethod
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response

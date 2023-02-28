@@ -1,29 +1,29 @@
 package com.example.adyen.checkout.service
 
-import com.adyen.checkout.dropin.service.CallResult
 import com.adyen.checkout.dropin.service.DropInService
+import com.adyen.checkout.dropin.service.DropInServiceResult
 import org.json.JSONObject
 
 class DropinService : DropInService() {
     private var checkoutApiService = CheckoutApiService.getInstance()
 
-    override fun makePaymentsCall(paymentComponentData: JSONObject): CallResult {
+    override fun makePaymentsCall(paymentComponentData: JSONObject): DropInServiceResult {
         return handlePaymentRequestResult(checkoutApiService.initPayment(paymentComponentData, ComponentType.DROPIN.id))
     }
 
-    override fun makeDetailsCall(actionComponentData: JSONObject): CallResult {
+    override fun makeDetailsCall(actionComponentData: JSONObject): DropInServiceResult {
         return handlePaymentRequestResult(checkoutApiService.submitAdditionalDetails(actionComponentData))
     }
 
-    private fun handlePaymentRequestResult(response: JSONObject): CallResult {
+    private fun handlePaymentRequestResult(response: JSONObject): DropInServiceResult {
         return try {
             if (response.isNull("action")) {
-                CallResult(CallResult.ResultType.FINISHED, response.getString("resultCode"))
+                DropInServiceResult.Finished(response.getString("resultCode"))
             } else {
-                CallResult(CallResult.ResultType.ACTION, response.getString("action"))
+                DropInServiceResult.Action(response.getString("action"))
             }
         } catch (e: Exception) {
-            CallResult(CallResult.ResultType.ERROR, e.toString())
+            DropInServiceResult.Error(e.toString())
         }
     }
 }
