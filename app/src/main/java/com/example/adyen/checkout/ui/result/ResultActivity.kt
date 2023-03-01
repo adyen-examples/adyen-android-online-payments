@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.adyen.checkout.components.ActionComponentData
 import com.adyen.checkout.redirect.RedirectComponent
 import com.adyen.checkout.redirect.RedirectConfiguration
@@ -33,8 +33,7 @@ class ResultActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val viewModel =
-            ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))[ComponentViewModel::class.java]
+        val viewModel = ViewModelProvider(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))[ComponentViewModel::class.java]
 
         viewModel.fetchConfig()
 

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.adyen.checkout.components.model.PaymentMethodsApiResponse
 import com.adyen.checkout.dropin.DropIn
 import com.adyen.checkout.dropin.DropInConfiguration
@@ -27,8 +27,7 @@ class DropinFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_dropin, container, false)
-        val viewModel =
-            ViewModelProviders.of(this, DropinViewModelFactory(CheckoutApiService.getInstance()))[DropinViewModel::class.java]
+        val viewModel = ViewModelProvider(this, DropinViewModelFactory(CheckoutApiService.getInstance()))[DropinViewModel::class.java]
 
         viewModel.errorMsgData.observe(viewLifecycleOwner) {
             Utils.showError(root, it)

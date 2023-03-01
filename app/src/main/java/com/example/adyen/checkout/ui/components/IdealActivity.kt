@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.adyen.checkout.components.model.paymentmethods.PaymentMethod
 import com.adyen.checkout.components.model.payments.request.PaymentComponentData
 import com.adyen.checkout.components.model.payments.response.Action
@@ -50,8 +50,7 @@ class IdealActivity : AppCompatActivity() {
         ideal_view = findViewById(R.id.ideal_view)
         ideal_pay_button = findViewById(R.id.ideal_pay_button)
 
-        val viewModel =
-            ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))[ComponentViewModel::class.java]
+        val viewModel = ViewModelProvider(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))[ComponentViewModel::class.java]
 
         viewModel.errorMsgData.observe(this) {
             Utils.showError(this.ideal, it)
