@@ -89,23 +89,23 @@ class CardActivity : AppCompatActivity() {
             })
         })
 
-        val redirectComponent = RedirectComponent.PROVIDER.get(this)
-        val threedsComponent = Adyen3DS2Component.PROVIDER.get(this)
-//         Handle 3DS2 authentication from payment
-        threedsComponent.observe(this, Observer {
-            viewModel.submitDetails(ActionComponentData.SERIALIZER.serialize(it))
-        })
-
-        viewModel.actionData.observe(this, Observer {
-            when (it.type) {
-                RedirectAction.ACTION_TYPE -> {
-                    redirectComponent.handleAction(this, it)
-                }
-                Threeds2FingerprintAction.ACTION_TYPE, Threeds2ChallengeAction.ACTION_TYPE -> {
-                    threedsComponent.handleAction(this, it)
-                }
-            }
-        })
+//        val redirectComponent = RedirectComponent.PROVIDER.get(this)
+//        val threedsComponent = Adyen3DS2Component.PROVIDER.get(this)
+////         Handle 3DS2 authentication from payment
+//        threedsComponent.observe(this, Observer {
+//            viewModel.submitDetails(ActionComponentData.SERIALIZER.serialize(it))
+//        })
+//
+//        viewModel.actionData.observe(this, Observer {
+//            when (it.type) {
+//                RedirectAction.ACTION_TYPE -> {
+//                    redirectComponent.handleAction(this, it)
+//                }
+//                Threeds2FingerprintAction.ACTION_TYPE, Threeds2ChallengeAction.ACTION_TYPE -> {
+//                    threedsComponent.handleAction(this, it)
+//                }
+//            }
+//        })
 
         viewModel.paymentResData.observe(this, Observer {
             // start result intent
