@@ -9,7 +9,6 @@ import com.adyen.checkout.components.model.PaymentMethodsApiResponse
 import com.adyen.checkout.components.model.payments.Amount
 import com.adyen.checkout.core.api.Environment
 import com.adyen.checkout.dropin.DropInConfiguration
-import com.android.volley.Response
 import com.example.adyen.checkout.service.CheckoutApiService
 import com.example.adyen.checkout.service.DropinService
 import java.util.*
