@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adyen.checkout.R
 import com.example.adyen.checkout.ui.cart.CartContent.CartItem
 import com.example.adyen.checkout.ui.cart.CartViewFragment.OnListFragmentInteractionListener
-import kotlinx.android.synthetic.main.fragment_cart_view.view.*
 
 /**
  * [RecyclerView.Adapter] that can display a [CartItem] and makes a call to the
@@ -58,9 +57,9 @@ class CartRecyclerViewAdapter(
     override fun getItemCount(): Int = mValues.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mImageView: ImageView = mView.item_image
-        val mNameView: TextView = mView.item_name
-        val mPriceView: TextView = mView.item_price
+        val mImageView: ImageView = mView.findViewById(R.id.item_image)
+        val mNameView: TextView = mView.findViewById(R.id.item_name)
+        val mPriceView: TextView = mView.findViewById(R.id.item_price)
 
         override fun toString(): String {
             return super.toString() + " '" + mNameView.text + "'" + mPriceView.text + "'"

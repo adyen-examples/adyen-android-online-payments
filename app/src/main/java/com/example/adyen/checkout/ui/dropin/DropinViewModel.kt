@@ -1,20 +1,16 @@
 package com.example.adyen.checkout.ui.dropin
 
 import android.content.Context
-import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.adyen.checkout.base.model.PaymentMethodsApiResponse
-import com.adyen.checkout.base.model.payments.Amount
 import com.adyen.checkout.card.CardConfiguration
+import com.adyen.checkout.components.model.PaymentMethodsApiResponse
+import com.adyen.checkout.components.model.payments.Amount
 import com.adyen.checkout.core.api.Environment
 import com.adyen.checkout.dropin.DropInConfiguration
-import com.android.volley.Response
 import com.example.adyen.checkout.service.CheckoutApiService
-import com.example.adyen.checkout.service.ComponentType
 import com.example.adyen.checkout.service.DropinService
-import com.example.adyen.checkout.ui.result.ResultActivity
 import java.util.*
 
 
@@ -27,18 +23,18 @@ class DropinViewModel(private val checkoutApiService: CheckoutApiService) : View
 
     fun fetchPaymentMethods() {
         checkoutApiService.getPaymentMethods(
-            Response.Listener {
+            {
                 paymentMethodsResponseData.value = PaymentMethodsApiResponse.SERIALIZER.deserialize(it)
-            }, Response.ErrorListener {
+            }, {
                 errorMsgData.value = "Error getting payment methods! $it"
             })
     }
 
     fun fetchDropinConfig(ctx: Context) {
-        checkoutApiService.getConfig(Response.Listener {
+        checkoutApiService.getConfig({
             val cardConfiguration =
                 CardConfiguration.Builder(ctx, it.getString("clientPublicKey"))
-                    .setHolderNameRequire(true)
+                    .setHolderNameRequired(true)
                     .setShopperLocale(shopperLocale)
                     .build()
             val amount = Amount()
@@ -46,13 +42,9 @@ class DropinViewModel(private val checkoutApiService: CheckoutApiService) : View
             amount.currency = "EUR"
             amount.value = 1000
 
-            // Activity launch on result
-            val intent = Intent(ctx, ResultActivity::class.java).apply {
-                putExtra(ResultActivity.TYPE_KEY, ComponentType.DROPIN.id)
-            }
-
             dropinConfigData.value =
-                DropInConfiguration.Builder(ctx, intent, DropinService::class.java)
+//                DropInConfiguration.Builder(ctx, intent, DropinService::class.java)
+                    DropInConfiguration.Builder(ctx, DropinService::class.java, it.getString("clientPublicKey"))
                     // Optional. Use if you want to display the amount and currency on the Pay button.
                     .setAmount(amount)
                     // When you're ready to accept live payments, change the value to one of our live environments.
@@ -62,7 +54,7 @@ class DropinViewModel(private val checkoutApiService: CheckoutApiService) : View
                     .setShopperLocale(shopperLocale)
                     .addCardConfiguration(cardConfiguration)
                     .build()
-        }, Response.ErrorListener {
+        }, {
             errorMsgData.value = "Error getting config! $it"
         })
     }
@@ -70,7 +62,7 @@ class DropinViewModel(private val checkoutApiService: CheckoutApiService) : View
 
 @Suppress("UNCHECKED_CAST")
 class DropinViewModelFactory(private val checkoutApiService: CheckoutApiService) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return DropinViewModel(checkoutApiService) as T
     }
 }

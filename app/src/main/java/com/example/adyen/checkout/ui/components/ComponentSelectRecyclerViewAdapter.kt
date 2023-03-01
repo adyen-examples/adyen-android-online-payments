@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adyen.checkout.R
 import com.example.adyen.checkout.ui.components.ComponentSelectContent.ComponentSelectItem
 import com.example.adyen.checkout.ui.components.ComponentSelectFragment.OnListFragmentInteractionListener
-import kotlinx.android.synthetic.main.fragment_component_select.view.*
 
 /**
  * [RecyclerView.Adapter] that can display a [ComponentSelectItem] and makes a call to the
@@ -50,7 +49,7 @@ class ComponentSelectRecyclerViewAdapter(
     override fun getItemCount(): Int = mValues.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mContentView: TextView = mView.content
+        val mContentView: TextView = mView.findViewById(R.id.content)
 
         override fun toString(): String {
             return super.toString() + " '" + mContentView.text + "'"

@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 .env
+
+app/.idea/
+app/local.properties

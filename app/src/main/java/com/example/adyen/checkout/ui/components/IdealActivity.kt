@@ -3,24 +3,34 @@ package com.example.adyen.checkout.ui.components
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.adyen.checkout.base.model.paymentmethods.PaymentMethod
-import com.adyen.checkout.base.model.payments.request.PaymentComponentData
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.ViewModelProvider
+import com.adyen.checkout.components.model.paymentmethods.PaymentMethod
+import com.adyen.checkout.components.model.payments.request.PaymentComponentData
+import com.adyen.checkout.components.model.payments.response.Action
 import com.adyen.checkout.core.api.Environment
 import com.adyen.checkout.ideal.IdealComponent
 import com.adyen.checkout.ideal.IdealConfiguration
+import com.adyen.checkout.ideal.IdealSpinnerView
 import com.adyen.checkout.redirect.RedirectComponent
+import com.adyen.checkout.redirect.RedirectConfiguration
 import com.example.adyen.checkout.R
 import com.example.adyen.checkout.service.CheckoutApiService
 import com.example.adyen.checkout.service.Utils
 import com.example.adyen.checkout.ui.result.ResultActivity
-import kotlinx.android.synthetic.main.activity_ideal.*
+import org.json.JSONObject
 import java.util.*
 
 class IdealActivity : AppCompatActivity() {
     private var shopperLocale = Locale.ENGLISH
+
+    private lateinit var ideal : ConstraintLayout
+    private lateinit var ideal_view : IdealSpinnerView
+    private lateinit var ideal_pay_button : Button
+
+    private lateinit var clientKey: String
 
     companion object {
         private const val PM_KEY = "payment_method"
@@ -36,48 +46,57 @@ class IdealActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ideal)
 
-        val viewModel =
-            ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))
-                .get(ComponentViewModel::class.java)
+        ideal = findViewById(R.id.ideal)
+        ideal_view = findViewById(R.id.ideal_view)
+        ideal_pay_button = findViewById(R.id.ideal_pay_button)
 
-        viewModel.errorMsgData.observe(this, Observer {
+        val viewModel = ViewModelProvider(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))[ComponentViewModel::class.java]
+
+        viewModel.errorMsgData.observe(this) {
             Utils.showError(this.ideal, it)
-        })
+        }
 
-        val config = IdealConfiguration.Builder(shopperLocale, Environment.TEST).build()
-        val paymentMethod = intent.getParcelableExtra<PaymentMethod>(PM_KEY)
-        val idealComponent = IdealComponent.PROVIDER.get(
-            this,
-            paymentMethod!!,
-            config
-        )
+        viewModel.fetchConfig()
 
-        ideal_view.attach(idealComponent, this)
+        viewModel.configData.observe(this) { c ->
+            clientKey = c.getString("clientPublicKey")
+            val config = IdealConfiguration.Builder(shopperLocale, Environment.TEST, clientKey).build()
+            val paymentMethod = intent.getParcelableExtra<PaymentMethod>(PM_KEY)
+            val idealComponent = IdealComponent.PROVIDER.get(
+                this,
+                paymentMethod!!,
+                config
+            )
 
-        idealComponent.observe(this, Observer {
-            // When the shopper proceeds to pay, pass the `it.data` to your server to send a /payments request
-            if (it.isValid) {
-                ideal_pay_button.isEnabled = true
-                ideal_pay_button.setOnClickListener { _ ->
-                    val paymentComponentData = PaymentComponentData.SERIALIZER.serialize(it.data)
-                    viewModel.initPayment(paymentComponentData)
-                    ideal_pay_button.isEnabled = false
+            ideal_view.attach(idealComponent, this)
+
+            idealComponent.observe(this) {
+                // When the shopper proceeds to pay, pass the `it.data` to your server to send a /payments request
+                if (it.isValid) {
+                    ideal_pay_button.isEnabled = true
+                    ideal_pay_button.setOnClickListener { _ ->
+                        val paymentComponentData = PaymentComponentData.SERIALIZER.serialize(it.data)
+                        viewModel.initPayment(paymentComponentData)
+                        ideal_pay_button.isEnabled = false
+                    }
                 }
             }
-        })
 
-        idealComponent.observeErrors(this, Observer {
-            Utils.showError(this.ideal, "ERROR - ${it.errorMessage}")
-        })
+            idealComponent.observeErrors(this) {
+                Utils.showError(this.ideal, "ERROR - ${it.errorMessage}")
+            }
+        }
 
-        viewModel.actionData.observe(this, Observer {
-            val redirectComponent = RedirectComponent.PROVIDER.get(this)
-            redirectComponent.handleAction(this, it)
-        })
+        viewModel.actionData.observe(this) {
+            val config = RedirectConfiguration.Builder(this, clientKey).build()
+            val redirectComponent = RedirectComponent.PROVIDER.get(this, application, config)
+            val action = Action.SERIALIZER.deserialize(JSONObject(it.actionJSON))
+            redirectComponent.handleAction(this, action)
+        }
 
-        viewModel.paymentResData.observe(this, Observer {
+        viewModel.paymentResData.observe(this) {
             // start result intent
             ResultActivity.start(this, it)
-        })
+        }
     }
 }

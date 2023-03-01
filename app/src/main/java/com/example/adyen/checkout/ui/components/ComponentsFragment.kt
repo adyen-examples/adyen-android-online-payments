@@ -28,11 +28,11 @@ class ComponentsFragment(private val type: ComponentType) : Fragment() {
             ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))
                 .get(ComponentViewModel::class.java)
 
-        viewModel.errorMsgData.observe(this, Observer {
+        viewModel.errorMsgData.observe(viewLifecycleOwner, Observer {
             Utils.showError(root, it)
         })
 
-        viewModel.paymentMethodsData.observe(this, Observer { pm ->
+        viewModel.paymentMethodsData.observe(viewLifecycleOwner, Observer { pm ->
             if (pm != null) {
                 val btnCheckout: Button = root.findViewById(R.id.btn_comp_checkout)
                 btnCheckout.isEnabled = true

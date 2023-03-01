@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.adyen.checkout.base.ActionComponentData
+import androidx.lifecycle.ViewModelProvider
+import com.adyen.checkout.components.ActionComponentData
 import com.adyen.checkout.redirect.RedirectComponent
+import com.adyen.checkout.redirect.RedirectConfiguration
 import com.example.adyen.checkout.MainActivity
 import com.example.adyen.checkout.R
 import com.example.adyen.checkout.service.CheckoutApiService
@@ -30,9 +30,13 @@ class ResultActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val viewModel = ViewModelProvider(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))[ComponentViewModel::class.java]
+
+        viewModel.fetchConfig()
+
         setContentView(R.layout.activity_result)
 
         val res = intent?.getStringExtra(RESULT_KEY) ?: "Processing"
@@ -49,25 +53,26 @@ class ResultActivity : AppCompatActivity() {
         val type = intent?.getStringExtra(TYPE_KEY)
 
         if (type != ComponentType.DROPIN.id) {
-            val viewModel = ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))
-                .get(ComponentViewModel::class.java)
-
             // Redirection from payment is handled here as the flow redirects here
-            val redirectComponent = RedirectComponent.PROVIDER.get(this)
-            redirectComponent.observe(this, Observer {
-                viewModel.submitDetails(ActionComponentData.SERIALIZER.serialize(it))
-            })
 
-            if (intent != null && intent.action == Intent.ACTION_VIEW) {
-                val data = intent.data
-                if (data != null && data.toString().startsWith("adyencheckoutcomp://")) {
-                    redirectComponent.handleRedirectResponse(data)
+            viewModel.configData.observe(this) { c ->
+                val redirectConfiguration = RedirectConfiguration.Builder(this, c.getString("clientPublicKey")).build()
+                val redirectComponent = RedirectComponent.PROVIDER.get(this, application, redirectConfiguration)
+                redirectComponent.observe(this) {
+                    viewModel.submitDetails(ActionComponentData.SERIALIZER.serialize(it))
+                }
+
+                if (intent != null && intent.action == Intent.ACTION_VIEW) {
+                    val data = intent.data
+                    if (data != null && data.toString().startsWith("adyencheckoutcomp://")) {
+                        redirectComponent.handleIntent(intent)
+                    }
                 }
             }
 
-            viewModel.paymentResData.observe(this, Observer {
+            viewModel.paymentResData.observe(this) {
                 txt.text = it
-            })
+            }
         }
 
     }
