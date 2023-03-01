@@ -55,7 +55,7 @@ class ComponentViewModel(private val checkoutApiService: CheckoutApiService) : V
 
     private fun handleResponse(it: JSONObject) {
         if (it.has("action")) {
-            actionData.value = DropInServiceResult.Action(it.getJSONObject("action").toString()) // TODO : Working?
+            actionData.value = DropInServiceResult.Action(it.getJSONObject("action").toString())
         } else {
             paymentResData.value = it.optString("resultCode", "NONE")
         }

@@ -10,14 +10,19 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.adyen.checkout.components.model.paymentmethods.PaymentMethod
 import com.adyen.checkout.components.model.payments.request.PaymentComponentData
+import com.adyen.checkout.components.model.payments.response.Action
 import com.adyen.checkout.core.api.Environment
 import com.adyen.checkout.ideal.IdealComponent
 import com.adyen.checkout.ideal.IdealConfiguration
 import com.adyen.checkout.ideal.IdealSpinnerView
+import com.adyen.checkout.redirect.RedirectComponent
+import com.adyen.checkout.redirect.RedirectConfiguration
 import com.example.adyen.checkout.R
 import com.example.adyen.checkout.service.CheckoutApiService
 import com.example.adyen.checkout.service.Utils
 import com.example.adyen.checkout.ui.result.ResultActivity
+import com.google.android.gms.common.api.Api.AnyClientKey
+import org.json.JSONObject
 import java.util.*
 
 class IdealActivity : AppCompatActivity() {
@@ -26,6 +31,8 @@ class IdealActivity : AppCompatActivity() {
     private lateinit var ideal : ConstraintLayout;
     private lateinit var ideal_view : IdealSpinnerView;
     private lateinit var ideal_pay_button : Button;
+
+    private lateinit var clientKey: String
 
     companion object {
         private const val PM_KEY = "payment_method"
@@ -46,8 +53,7 @@ class IdealActivity : AppCompatActivity() {
         ideal_pay_button = findViewById(R.id.ideal_pay_button)
 
         val viewModel =
-            ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))
-                .get(ComponentViewModel::class.java)
+            ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))[ComponentViewModel::class.java]
 
         viewModel.errorMsgData.observe(this, Observer {
             Utils.showError(this.ideal, it)
@@ -55,8 +61,9 @@ class IdealActivity : AppCompatActivity() {
 
         viewModel.fetchConfig()
 
-        viewModel.configData.observe(this, Observer { c ->
-            val config = IdealConfiguration.Builder(shopperLocale, Environment.TEST, c.getString("clientPublicKey")).build()
+        viewModel.configData.observe(this) { c ->
+            clientKey = c.getString("clientPublicKey")
+            val config = IdealConfiguration.Builder(shopperLocale, Environment.TEST, clientKey).build()
             val paymentMethod = intent.getParcelableExtra<PaymentMethod>(PM_KEY)
             val idealComponent = IdealComponent.PROVIDER.get(
                 this,
@@ -81,17 +88,18 @@ class IdealActivity : AppCompatActivity() {
             idealComponent.observeErrors(this, Observer {
                 Utils.showError(this.ideal, "ERROR - ${it.errorMessage}")
             })
-        })
+        }
 
-        viewModel.actionData.observe(this, Observer {
-            // TODO : Reactivate
-//            val redirectComponent = RedirectComponent.PROVIDER.get(this)
-//            redirectComponent.handleAction(this, it)
-        })
+        viewModel.actionData.observe(this) {
+            val config = RedirectConfiguration.Builder(this, clientKey).build()
+            val redirectComponent = RedirectComponent.PROVIDER.get(this, application, config)
+            val action = Action.SERIALIZER.deserialize(JSONObject(it.actionJSON))
+            redirectComponent.handleAction(this, action)
+        }
 
-        viewModel.paymentResData.observe(this, Observer {
+        viewModel.paymentResData.observe(this) {
             // start result intent
             ResultActivity.start(this, it)
-        })
+        }
     }
 }

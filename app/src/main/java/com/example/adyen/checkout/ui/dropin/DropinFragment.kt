@@ -26,33 +26,30 @@ class DropinFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_dropin, container, false)
         val viewModel =
-            ViewModelProviders.of(this, DropinViewModelFactory(CheckoutApiService.getInstance()))
-                .get(DropinViewModel::class.java)
+            ViewModelProviders.of(this, DropinViewModelFactory(CheckoutApiService.getInstance()))[DropinViewModel::class.java]
 
-        viewModel.errorMsgData.observe(viewLifecycleOwner, Observer {
+        viewModel.errorMsgData.observe(viewLifecycleOwner) {
             Utils.showError(root, it)
-        })
+        }
 
-        viewModel.dropinConfigData.observe(viewLifecycleOwner, Observer {
+        viewModel.dropinConfigData.observe(viewLifecycleOwner) {
             dropInConfiguration = it
-        })
+        }
 
-        viewModel.paymentMethodsResponseData.observe(viewLifecycleOwner, Observer { pmr : PaymentMethodsApiResponse ->
+        viewModel.paymentMethodsResponseData.observe(viewLifecycleOwner) { pmr: PaymentMethodsApiResponse ->
             val btnCheckout: Button = root.findViewById(R.id.btn_checkout)
             btnCheckout.isEnabled = true
             btnCheckout.setOnClickListener {
                 if (dropInConfiguration != null) {
-                    DropIn.startPayment( // TODO : Working?
-//                        root.context,
-                        this,
+
+                    DropIn.startPayment(this@DropinFragment,
                         pmr,
-                        dropInConfiguration!!
-                    )
+                        dropInConfiguration!!)
                 } else {
                     Utils.showError(root, "Payment Methods not found!")
                 }
             }
-        })
+        }
 
         viewModel.fetchPaymentMethods()
         viewModel.fetchDropinConfig(root.context)
