@@ -23,7 +23,6 @@ class ResultActivity : AppCompatActivity() {
     companion object {
         const val RESULT_KEY = "payment_result"
         const val TYPE_KEY = "integration_type"
-        private lateinit var clientKey :  String
 
         fun start(context: Context, paymentResult: String) {
             val intent = Intent(context, ResultActivity::class.java)
@@ -37,6 +36,8 @@ class ResultActivity : AppCompatActivity() {
 
         val viewModel =
             ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))[ComponentViewModel::class.java]
+
+        viewModel.fetchConfig()
 
         setContentView(R.layout.activity_result)
 
@@ -55,22 +56,25 @@ class ResultActivity : AppCompatActivity() {
 
         if (type != ComponentType.DROPIN.id) {
             // Redirection from payment is handled here as the flow redirects here
-            val redirectConfiguration = RedirectConfiguration.Builder(this, clientKey).build()
-            val redirectComponent = RedirectComponent.PROVIDER.get(this, application, redirectConfiguration)
-            redirectComponent.observe(this, Observer {
-                viewModel.submitDetails(ActionComponentData.SERIALIZER.serialize(it))
-            })
 
-            if (intent != null && intent.action == Intent.ACTION_VIEW) {
-                val data = intent.data
-                if (data != null && data.toString().startsWith("adyencheckoutcomp://")) {
-                    redirectComponent.handleIntent(intent)
+            viewModel.configData.observe(this) { c ->
+                val redirectConfiguration = RedirectConfiguration.Builder(this, c.getString("clientPublicKey")).build()
+                val redirectComponent = RedirectComponent.PROVIDER.get(this, application, redirectConfiguration)
+                redirectComponent.observe(this) {
+                    viewModel.submitDetails(ActionComponentData.SERIALIZER.serialize(it))
+                }
+
+                if (intent != null && intent.action == Intent.ACTION_VIEW) {
+                    val data = intent.data
+                    if (data != null && data.toString().startsWith("adyencheckoutcomp://")) {
+                        redirectComponent.handleIntent(intent)
+                    }
                 }
             }
 
-            viewModel.paymentResData.observe(this, Observer {
+            viewModel.paymentResData.observe(this) {
                 txt.text = it
-            })
+            }
         }
 
     }

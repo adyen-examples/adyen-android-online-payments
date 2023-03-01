@@ -21,16 +21,15 @@ import com.example.adyen.checkout.R
 import com.example.adyen.checkout.service.CheckoutApiService
 import com.example.adyen.checkout.service.Utils
 import com.example.adyen.checkout.ui.result.ResultActivity
-import com.google.android.gms.common.api.Api.AnyClientKey
 import org.json.JSONObject
 import java.util.*
 
 class IdealActivity : AppCompatActivity() {
     private var shopperLocale = Locale.ENGLISH
 
-    private lateinit var ideal : ConstraintLayout;
-    private lateinit var ideal_view : IdealSpinnerView;
-    private lateinit var ideal_pay_button : Button;
+    private lateinit var ideal : ConstraintLayout
+    private lateinit var ideal_view : IdealSpinnerView
+    private lateinit var ideal_pay_button : Button
 
     private lateinit var clientKey: String
 
@@ -55,9 +54,9 @@ class IdealActivity : AppCompatActivity() {
         val viewModel =
             ViewModelProviders.of(this, ComponentViewModelFactory(CheckoutApiService.getInstance()))[ComponentViewModel::class.java]
 
-        viewModel.errorMsgData.observe(this, Observer {
+        viewModel.errorMsgData.observe(this) {
             Utils.showError(this.ideal, it)
-        })
+        }
 
         viewModel.fetchConfig()
 
@@ -73,7 +72,7 @@ class IdealActivity : AppCompatActivity() {
 
             ideal_view.attach(idealComponent, this)
 
-            idealComponent.observe(this, Observer {
+            idealComponent.observe(this) {
                 // When the shopper proceeds to pay, pass the `it.data` to your server to send a /payments request
                 if (it.isValid) {
                     ideal_pay_button.isEnabled = true
@@ -83,11 +82,11 @@ class IdealActivity : AppCompatActivity() {
                         ideal_pay_button.isEnabled = false
                     }
                 }
-            })
+            }
 
-            idealComponent.observeErrors(this, Observer {
+            idealComponent.observeErrors(this) {
                 Utils.showError(this.ideal, "ERROR - ${it.errorMessage}")
-            })
+            }
         }
 
         viewModel.actionData.observe(this) {
